@@ -1,0 +1,54 @@
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<!-- HelloSocketServer jar distribute version -->
+<project name="HelloSocketServer" default="build">
+	<property name="Name" value="HelloSocketServer"></property>
+	<property name="name" value="HelloSocketServer"></property>
+	<property name="groupid" value="io.acornsoft"></property>
+	<property name="project.version" value="0.0.1"></property>
+	
+	<property name="src.dir" value="src"></property>
+	<property name="build.dir" value="build"></property>
+	<property name="classes.dir" value="${build.dir}/classes"></property>
+	<property name="jar.dir" value="${build.dir}/jar"></property>
+	<property name="lib.dir" value="lib"></property>
+	
+	<path id="classpath">
+	    <fileset dir="${lib.dir}" includes="**/*.jar"></fileset>
+	</path>
+	
+	<target name="clean">
+		<delete dir="${build.dir}"></delete>
+    	<echo>${Name} Clean!</echo>
+	</target>
+	<target name="init">
+		<mkdir dir="${build.dir}"></mkdir>
+		<mkdir dir="${classes.dir}"></mkdir>
+		<echo>${Name} Init!</echo>
+	</target>
+	<target name="compile" depends="init">
+		<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath" includeantruntime="false" encoding="utf-8">
+		</javac>
+		<copy file="${src.dir}/logback.xml" tofile="${classes.dir}/logback.xml"/>
+		<echo>${Name} Compile!</echo>
+	</target>
+    <target name="jar" depends="compile">
+        <jar destfile="${jar.dir}/${name}-${project.version}.jar" basedir="${classes.dir}">
+        	<manifest>
+        		<attribute name="Main-Class" value="io.acornsoft.App"></attribute>
+        	</manifest>
+        </jar>
+    	<echo>${Name} Makes Jar File!</echo>
+    </target>
+	<target name="run" depends="compile,jar">
+	    <java fork="true" classname="io.acornsoft.App">
+	        <classpath>
+	            <path refid="classpath"></path>
+	            <path location="${jar.dir}/${name}-${project.version}.jar"/>
+	        </classpath>
+	    </java>
+	</target>
+    
+	<target name="build" depends="clean,jar,run">
+	</target>
+	
+</project>
